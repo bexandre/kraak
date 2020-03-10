@@ -95,7 +95,7 @@ void show (zoom displayed) {
 		disp_tmp = displayed.Map.tab[displayed.Map.pos[0]+q-5][displayed.Map.pos[1]+r-5];
 		prev_tmp = displayed.Map.tab[displayed.old_pos[0]+q-5][displayed.old_pos[1]+r-5];
 		if ((displayed.after_2nd_frame and disp_tmp != prev_tmp) or !displayed.after_2nd_frame)
-									{ move_cursor(2*r+10,q+5); printf("%c%c",disp_tmp,disp_tmp); }
+					    { move_cursor(2*r+10,q+5); printf("%c%c",disp_tmp,disp_tmp); }
 	}
 	move_cursor(10+10,5+5); printf("[]");
 }
