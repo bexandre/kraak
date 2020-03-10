@@ -78,8 +78,6 @@ controls init_controls () {
 
 
 void update (zoom& displayed, int ch, controls user_controls) {
-	// wouldn't let me use a switch, it would keep showing me
-	//'user_controls' cannot appear in a constant-expression fsr
 	int q, r, disp_tmp;
 	for (int i = 0; i < 10*10; i++) {
 		q = i/10;
