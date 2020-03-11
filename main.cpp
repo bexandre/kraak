@@ -40,7 +40,7 @@ struct zoom {
 	map Map;
 	char tab[10][10+1];
 	int old_pos[2];
-	bool after_2nd_frame = false;
+	bool update = false;
 };
 
 struct controls {
@@ -61,7 +61,7 @@ zoom init_zoom (map M) {
 		ret.tab[q][r] = M.tab[M.pos[0]+r-5][M.pos[1]+q-5];
 	}
 	ret.Map = M;
-	ret.after_2nd_frame = 0;
+	ret.update = 0;
 	ret.old_pos[0] = M.pos[0];
 	ret.old_pos[1] = M.pos[1];
 	return ret;
@@ -94,10 +94,10 @@ void show (zoom displayed) {
 		r = i - 10*q;
 		disp_tmp = displayed.Map.tab[displayed.Map.pos[0]+q-5][displayed.Map.pos[1]+r-5];
 		prev_tmp = displayed.Map.tab[displayed.old_pos[0]+q-5][displayed.old_pos[1]+r-5];
-		if ((displayed.after_2nd_frame and disp_tmp != prev_tmp) or !displayed.after_2nd_frame)
-					    { move_cursor(2*r+10,q+5); printf("%c%c",disp_tmp,disp_tmp); }
+		if ((displayed.update and disp_tmp != prev_tmp and (q != 5 or r != 5)) or !displayed.update)
+		{ move_cursor(2*r+10,q+5); printf("%c%c",disp_tmp,disp_tmp); }
+		if (!displayed.update) { move_cursor(10+10,5+5); printf("[]"); }
 	}
-	move_cursor(10+10,5+5); printf("[]");
 }
 
 
@@ -113,15 +113,15 @@ int main () {
 	clear();
 	zoom displayed = init_zoom(M);
 	show(displayed);
-	displayed.after_2nd_frame = true;
+	displayed.update = true;
 	ch = getch();
 	for (;;) {
 		displayed.old_pos[0] = displayed.Map.pos[0];
 		displayed.old_pos[1] = displayed.Map.pos[1];
-		if (ch == user_controls.up and not_equal(displayed.Map.tab[displayed.Map.pos[0]-1][displayed.Map.pos[1]], '\xB2', '\xB1')) displayed.Map.pos[0]--;
-		if (ch == user_controls.down and not_equal(displayed.Map.tab[displayed.Map.pos[0]+1][displayed.Map.pos[1]], '\xB2', '\xB1')) displayed.Map.pos[0]++;
-		if (ch == user_controls.left and not_equal(displayed.Map.tab[displayed.Map.pos[0]][displayed.Map.pos[1]-1], '\xB2', '\xB1')) displayed.Map.pos[1]--;
-		if (ch == user_controls.right and not_equal(displayed.Map.tab[displayed.Map.pos[0]][displayed.Map.pos[1]+1], '\xB2', '\xB1')) displayed.Map.pos[1]++;
+		if (ch == user_controls.up and not_equal(displayed.Map.tab[displayed.Map.pos[0]-1][displayed.Map.pos[1]], '\xB2', '\xB1', '.')) displayed.Map.pos[0]--;
+		if (ch == user_controls.down and not_equal(displayed.Map.tab[displayed.Map.pos[0]+1][displayed.Map.pos[1]], '\xB2', '\xB1', '.')) displayed.Map.pos[0]++;
+		if (ch == user_controls.left and not_equal(displayed.Map.tab[displayed.Map.pos[0]][displayed.Map.pos[1]-1], '\xB2', '\xB1', '.')) displayed.Map.pos[1]--;
+		if (ch == user_controls.right and not_equal(displayed.Map.tab[displayed.Map.pos[0]][displayed.Map.pos[1]+1], '\xB2', '\xB1', '.')) displayed.Map.pos[1]++;
 		// ^^^ this has to be the most terrific shit i've ever written ^^^
 		update(displayed,ch,user_controls);
 		show(displayed);
